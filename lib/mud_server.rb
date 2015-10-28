@@ -26,6 +26,39 @@ class MudServer
     return true
   end
 
+  def broadcast message, sender
+    puts 'broadcasting'
+    @connection_pool.each do |session|
+      out = say message, sender, session, 'shouted'
+      session.connection.puts out
+    end
+  end
+
+  def herecast message, sender, controller
+    puts "herecasting to #{controller}"
+    @connection_pool.each do |session|
+      if session.controller.class == controller.class
+        out = say message, sender, session
+        session.connection.puts out
+      end
+    end
+  end
+
+  def say message, sender, session, verb = 'said'
+    if sender.class == String
+      from = sender
+    else
+      if sender == session
+        from = 'You'
+      else
+        from = sender.instance_variable_get("@name")
+      end
+    end
+    "#{from} just #{verb}: \"#{message}\"."
+  end
+
+
+
   # You probably won't need this one in production, but it's a must for testing.
   def stop
     @tcp_socket.close

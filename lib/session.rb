@@ -11,6 +11,7 @@ class MudServer::Session
     @connection   = connection
     @ip_addr      = @connection.peeraddr[-1]
     @controller   = controller.new(self)
+    @name         = 'Someone'
   end
 
   def start

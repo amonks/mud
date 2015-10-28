@@ -24,20 +24,10 @@ It's got:
 ```ruby
 require 'ruby_mud'
 
-# Controllers define the action for a menu / sub-game. Eg: Login screen, 
+# Controllers define the action for a menu / sub-game. Eg: Login screen,
 # main game, map screen, etc.. By default, the server will start new connections
 # in MudServer::DefaultController.
 class MudServer::DefaultController
-  # on_start will always be called when the user enters a controller.
-  # You don't need to use it, but it's there.
-  def on_start
-    # Send messages via send_text.
-    send_text "Welcome! Here's a list of available commands"
-    send_text "TIME  : See the current time."
-    send_text "SAY   : Talk."
-    send_text "SECRET: Go somewhere super secret."
-    send_text "QUIT  : Disconnect from the server."
-  end
   # For security, you must explicitly whitelist any commands that you want to
   # give players access to. Otherwise they will not be accessible by users.
   def allowed_methods

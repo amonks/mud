@@ -1,3 +1,5 @@
+require 'pry'
+
 # Transfers input/output from the Telnet world into the Ruby world while
 # abstracting away all the rough spots.
 # All controllers should inherit from here
@@ -33,6 +35,18 @@ class MudServer::AbstractController
     session.connection.close
   end
 
+  # return server time
+  def time
+    send_text "The time is now #{Time.now}"
+  end
+
+  # return server time
+  def commands
+    send_text "Here's a list of available commands:"
+    send_text allowed_methods
+  end
+  alias_method :help, :commands
+
   # Parses arbitrary user input into a format usable by the interpreter. Strips
   # all input after initial command and stores it in `params`.
   #
@@ -47,7 +61,7 @@ class MudServer::AbstractController
     head    = command.shift
     @params = command.join(' ')
     interpret_command head.to_s.downcase
-  end  
+  end
 
   # Interprets a controller command (first argument of user input)
   #
@@ -91,7 +105,7 @@ class MudServer::AbstractController
   # (and when used in conjugation with +super+ in derived classes), will return
   # ['quit'] as its only accessible method. Returns Array of Strings.
   def allowed_methods
-    ['quit']
+    ['quit', 'time', 'help', 'commands']
   end
 
   # Transfers control from on controller to another. Eg: Move from login
