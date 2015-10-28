@@ -4,6 +4,7 @@ require 'pry'
 # abstracting away all the rough spots.
 # All controllers should inherit from here
 class MudServer::AbstractController
+  include MudServer::Helpable
 
   attr_accessor :session, :params
 
@@ -15,6 +16,8 @@ class MudServer::AbstractController
   # communicate with.
   def initialize(session)
     @session = session
+    @session.controller = self
+    send_text "\n\n"
     on_start
     true
   end
@@ -28,24 +31,31 @@ class MudServer::AbstractController
     @session.connection.puts(command)
   end
 
+  def send_list list
+    list.each do |item|
+      send_text " - #{item}"
+    end
+  end
+
   # Void paramaterless controller action that closes TCP socket to client.
   # You must whitelist this command in allowed_methods() in order for it to be
   # usable by players.
+  def quit_
+    "Leave the game"
+  end
   def quit
+    $server.herecast "%from just quit the game", @session, @session.controller
     session.connection.close
+    server.disconnect @session
   end
 
   # return server time
+  def time_
+    "Print the current time"
+  end
   def time
     send_text "The time is now #{Time.now}"
   end
-
-  # return server time
-  def commands
-    send_text "Here's a list of available commands:"
-    send_text allowed_methods
-  end
-  alias_method :help, :commands
 
   # Parses arbitrary user input into a format usable by the interpreter. Strips
   # all input after initial command and stores it in `params`.
@@ -78,8 +88,9 @@ class MudServer::AbstractController
       send_error
     end
   rescue => error
-      send_text 'You just broke something. Please tell the admins about this.'
-      send_text error.message
+    send_text 'Something just broke. Please tell the admins about this.'
+    send_text error.message
+    puts error.message
   end
 
   # A whimsical way of telling the user they input an unknown /
@@ -113,5 +124,4 @@ class MudServer::AbstractController
   def transfer_to(controller_name)
     @session.controller = controller_name.new(@session)
   end
-
 end

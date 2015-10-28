@@ -1,13 +1,12 @@
 Gem::Specification.new do |s|
   s.name        = 'ruby-mud'
-  s.version     = '0.0.4'
+  s.version     = '0.0.5'
   s.summary     = 'Framework for building text based adventure games in Ruby.'
-  s.date        = '2014-04-20'
+  s.date        = '2015-10-30'
   s.description = 'A very simple framework for building text based games in Ruby.'
-  s.authors     = ['Rick Carlino']
+  s.authors     = ['Rick Carlino', 'Andrew Monks']
   s.license     = 'MIT'
-  s.email       = 'please-use-github@rickcarlino.com'
-  s.homepage    = 'https://github.com/rickcarlino/mud'
+  s.homepage    = 'https://github.com/amonks/ruby_mud'
   s.files       = [
                     'lib/ruby_mud.rb',
                     'lib/mud_server.rb',
@@ -16,9 +15,8 @@ Gem::Specification.new do |s|
                     'lib/session.rb'
                   ]
 
-  # s.add_runtime_dependency 'dont_have_any'
+  # s.add_runtime_dependency 'I have none!'
 
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'pry'
-  s.add_development_dependency 'simplecov'
 end

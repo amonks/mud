@@ -1,6 +1,7 @@
 class MudServer::Session
+  # include Celluloid
 
-  attr_accessor :connection, :ip_addr, :input_thread, :controller
+  attr_accessor :connection, :ip_addr, :input_thread, :controller, :name
 
   def initialize(connection, controller = MudServer::DefaultController)
     bootstrap_settings(connection, controller)

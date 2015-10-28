@@ -17,7 +17,7 @@ class MudServer
   end
 
   def start
-    @tcp_socket = TCPServer.new @ip , @port
+    @tcp_socket = TCPServer.new @ip, @port
     @connection_acceptor = Thread.new do
       while connection = @tcp_socket.accept
         @connection_pool << MudServer::Session.new(connection)
@@ -29,38 +29,43 @@ class MudServer
   def broadcast message, sender
     puts 'broadcasting'
     @connection_pool.each do |session|
-      out = say message, sender, session, 'shouted'
+      out = format_message message, sender, session
       session.connection.puts out
     end
   end
 
-  def herecast message, sender, controller
+  def herecast message, sender, controller = sender.controller
     puts "herecasting to #{controller}"
-    @connection_pool.each do |session|
-      if session.controller.class == controller.class
-        out = say message, sender, session
-        session.connection.puts out
-      end
+    players_in(controller).each do |session|
+      out = format_message message, sender, session
+      session.connection.puts out
     end
   end
 
-  def say message, sender, session, verb = 'said'
+  def players_in controller
+    @connection_pool.select {|session|
+      session.controller.class == controller.class
+    }
+  end
+
+  def format_message message, sender, session, verb = 'said'
     if sender.class == String
       from = sender
     else
       if sender == session
-        from = 'You'
+        from = 'you'
       else
         from = sender.instance_variable_get("@name")
       end
     end
-    "#{from} just #{verb}: \"#{message}\"."
+    message.gsub('%from', from)
   end
 
 
 
   # You probably won't need this one in production, but it's a must for testing.
   def stop
+    broadcast "The game is now shutting down", "the server"
     @tcp_socket.close
     @connection_acceptor.kill
     @connection_acceptor = nil
