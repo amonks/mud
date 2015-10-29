@@ -1,6 +1,5 @@
 #The server class creates a single instance of a mud server.
 class MudServer
-
   attr_accessor :connection_pool, :tcp_socket,
                 :connection_acceptor, :port, :ip, :environment
 

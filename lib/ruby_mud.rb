@@ -1,5 +1,4 @@
 require 'socket'
-require 'celluloid'
 require_relative './mud_server.rb'
 require_relative './session.rb'
 require_relative './talkable.rb'

@@ -1,5 +1,3 @@
-require 'pry'
-
 # Transfers input/output from the Telnet world into the Ruby world while
 # abstracting away all the rough spots.
 # All controllers should inherit from here
